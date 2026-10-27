@@ -30,6 +30,12 @@ public class PlayerMovement : MonoBehaviour
     float animationMovementValueX = 0;
     float animationMovementValueY = 0;
 
+    public Cooldown DashCooldown;
+    [SerializeField]
+    float dashLenght;
+
+    public Transform temporalCursor;
+
     void Start()
     {
         playerInputs = GetComponent<PlayerInputReader>();
@@ -44,7 +50,11 @@ public class PlayerMovement : MonoBehaviour
         Movement();
         Rotation();
         Animations();
-        characterController.Move(movement*speed*Time.deltaTime);        
+
+        temporalCursor.position = MouseWorldPosition;
+
+        characterController.Move(movement*speed*Time.deltaTime);
+        Dash();
     }   
 
     void Movement() 
@@ -94,5 +104,14 @@ public class PlayerMovement : MonoBehaviour
 
         animator.SetFloat("Forward", animationMovementValueX);
         animator.SetFloat("Sideways", animationMovementValueY);
+    }
+
+    void Dash() 
+    {
+        if (playerInputs.Dash && !DashCooldown.InCooldown) 
+        {
+            characterController.Move(movement*dashLenght);
+            DashCooldown.StartCooldown();
+        }
     }
 }
