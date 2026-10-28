@@ -66,7 +66,7 @@ public class PlayerMovement : MonoBehaviour
     private void Rotation()
     {
 
-        Debug.Log(playerInputs.Aim);
+        //Debug.Log(playerInputs.Aim);
 
         Ray ray = cam.ScreenPointToRay(playerInputs.Aim);
 
