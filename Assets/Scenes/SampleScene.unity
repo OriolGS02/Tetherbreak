@@ -860,8 +860,8 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1006390722}
   serializedVersion: 4
-  m_Mass: 1
-  m_Drag: 0
+  m_Mass: 2
+  m_Drag: 1
   m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
@@ -3455,6 +3455,7 @@ MonoBehaviour:
   lineRenderer: {fileID: 1624590259}
   autoAim: 0
   grabbedObject: {fileID: 0}
+  SlowPersentage: 0
 --- !u!4 &5466103951589049139
 Transform:
   m_ObjectHideFlags: 0

@@ -12,7 +12,9 @@ public class TetherController : MonoBehaviour
 
     [SerializeField]
     GameObject grabbedObject;
-    
+
+    [SerializeField]
+    float SlowPersentage;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -55,8 +57,12 @@ public class TetherController : MonoBehaviour
             {
                 Vector3 hitpoint=hit.point;
                 Rigidbody rb=grabbedObject.GetComponent<Rigidbody>();
-                Vector3 dir = hitpoint - grabbedObject.transform.position;
-                rb.AddForce(dir*3,ForceMode.Impulse);
+                rb.constraints=RigidbodyConstraints.None;
+                Vector3 dir = hitpoint+(Vector3.up*0.5f) - grabbedObject.transform.position;
+
+                Vector3 directionValue = dir * 3;
+                
+                rb.AddForce(directionValue-((directionValue*SlowPersentage)/100),ForceMode.Impulse);
 
                 grabbedObject=null;
             }
@@ -64,6 +70,9 @@ public class TetherController : MonoBehaviour
             if (playerInputs.Attack && grabbedObject == null&&hit.collider.CompareTag("grab")/*check if its grabable*/)
             {
                 grabbedObject = hit.collider.gameObject;
+                grabbedObject.transform.position += (Vector3.up * 0.5f);
+                Rigidbody rb = grabbedObject.GetComponent<Rigidbody>();
+                rb.constraints = RigidbodyConstraints.FreezePositionY;
 
             }
 
