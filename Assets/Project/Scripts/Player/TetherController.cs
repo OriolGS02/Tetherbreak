@@ -10,11 +10,14 @@ public class TetherController : MonoBehaviour
     public bool autoAim;
     Camera cam;
 
-    [SerializeField]
-    GameObject grabbedObject;
+    
+    Grabable grabbedObject;
 
     [SerializeField]
-    float SlowPersentage;
+    float tetherForce;
+
+    [SerializeField]
+    Cooldown CanGrab;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -22,6 +25,7 @@ public class TetherController : MonoBehaviour
         lineRenderer.SetPosition(0, lineRenderer.gameObject.transform.parent.position);
         
         cam = Camera.main;
+        
     }
 
     // Update is called once per frame
@@ -40,7 +44,7 @@ public class TetherController : MonoBehaviour
             lineRenderer.gameObject.SetActive(false);
         }
 
-            TetherAim(); 
+        
     }
 
     void TetherAim() 
@@ -55,32 +59,28 @@ public class TetherController : MonoBehaviour
             
             if (playerInputs.Attack && grabbedObject != null) 
             {
-                Vector3 hitpoint=hit.point;
-                Rigidbody rb=grabbedObject.GetComponent<Rigidbody>();
-                rb.constraints=RigidbodyConstraints.None;
-                Vector3 dir = hitpoint+(Vector3.up*0.5f) - grabbedObject.transform.position;
+                Vector3 hitpoint=hit.point;                           
 
-                Vector3 directionValue = dir * 3;
                 
-                rb.AddForce(directionValue-((directionValue*SlowPersentage)/100),ForceMode.Impulse);
+                Vector3 dir = hitpoint + (Vector3.up * 0.5f) - grabbedObject.transform.position;
+                Vector3 rawDirection= hitpoint - grabbedObject.transform.position;
 
-                grabbedObject=null;
+                Vector3 directionValue = dir * tetherForce;
+                
+                grabbedObject.OnThrow(directionValue,dir);
+
+                CanGrab.StartCooldown();
+
+
+                grabbedObject =null;
             }
 
-            if (playerInputs.Attack && grabbedObject == null&&hit.collider.CompareTag("grab")/*check if its grabable*/)
+            if (playerInputs.Attack && grabbedObject == null&& hit.collider.gameObject.GetComponent<Grabable>()&&!CanGrab.InCooldown/*check if its grabable*/)
             {
-                grabbedObject = hit.collider.gameObject;
-                grabbedObject.transform.position += (Vector3.up * 0.5f);
-                Rigidbody rb = grabbedObject.GetComponent<Rigidbody>();
-                rb.constraints = RigidbodyConstraints.FreezePositionY;
-
+                grabbedObject = hit.collider.gameObject.GetComponent<Grabable>();
+                grabbedObject.OnGrab();
+                
             }
-
-
-
-
-
-
 
         }
     }
